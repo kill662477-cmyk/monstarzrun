@@ -3,957 +3,183 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>MONSTARZ RUN</title>
-
+<title>MONSTARZ RUN v5</title>
 <style>
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #050b18;
-  touch-action: none;
-  overscroll-behavior: none;
-  font-family: Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-}
-
-#gameWrap {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(78, 190, 255, .18), transparent 30%),
-    radial-gradient(circle at 80% 10%, rgba(255, 211, 95, .14), transparent 25%),
-    linear-gradient(180deg, #061126, #081832 60%, #07111f);
-}
-
-canvas {
-  width: 100vw;
-  height: 100vh;
-  display: block;
-  background: transparent;
-  touch-action: none;
-}
-
-#hud {
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 10;
-  color: white;
-  font-weight: 900;
-  text-shadow: 0 2px 8px rgba(0,0,0,.55);
-  pointer-events: none;
-}
-
-#score {
-  font-size: 22px;
-}
-
-#combo {
-  margin-top: 4px;
-  font-size: 16px;
-  color: #ffd95c;
-  opacity: 0;
-  transition: opacity .15s;
-}
-
-#combo.on {
-  opacity: 1;
-}
-
-#startScreen,
-#gameOverScreen {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(3, 8, 18, .72);
-  color: white;
-  text-align: center;
-}
-
-.panel {
-  width: min(420px, 88vw);
-  padding: 26px 22px;
-  border-radius: 24px;
-  background: rgba(10, 25, 48, .92);
-  border: 1px solid rgba(255,255,255,.16);
-  box-shadow: 0 18px 60px rgba(0,0,0,.45);
-}
-
-.panel h1 {
-  margin: 0 0 10px;
-  font-size: 32px;
-}
-
-.panel p {
-  margin: 8px 0;
-  color: #cfe6ff;
-  line-height: 1.5;
-}
-
-.panel button {
-  margin-top: 16px;
-  width: 100%;
-  height: 48px;
-  border: 0;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #36d1ff, #7b5cff);
-  color: white;
-  font-size: 17px;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-#mobileControls {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 18px;
-  z-index: 15;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-  pointer-events: none;
-}
-
-.ctrlBtn {
-  width: 86px;
-  height: 86px;
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.28);
-  background: rgba(14, 33, 62, .72);
-  color: white;
-  font-size: 15px;
-  font-weight: 900;
-  backdrop-filter: blur(8px);
-  pointer-events: auto;
-  user-select: none;
-}
-
-@media (min-width: 900px) {
-  #mobileControls {
-    display: none;
-  }
-}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050b1c;font-family:Arial,'Malgun Gothic',sans-serif;color:#fff}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 20%,#113b78 0,#050b1c 55%,#020512 100%)}
+  canvas{width:100vw;height:calc(100vw * .5625);max-height:100vh;max-width:calc(100vh * 1.7777);display:block;border-radius:18px;box-shadow:0 0 40px rgba(0,180,255,.25);background:#06112c}
+  .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}.panel{width:min(560px,90vw);padding:28px 22px;border:1px solid rgba(100,220,255,.45);border-radius:24px;background:linear-gradient(180deg,rgba(7,18,52,.92),rgba(5,10,28,.92));box-shadow:0 0 30px rgba(0,180,255,.25);text-align:center;pointer-events:auto}.title{font-size:38px;font-weight:900;letter-spacing:-1px;text-shadow:0 0 14px #00bfff}.desc{font-size:15px;line-height:1.6;color:#d9f6ff;margin:12px 0 18px}.btn{border:0;border-radius:999px;padding:14px 26px;font-size:18px;font-weight:900;color:#06112c;background:linear-gradient(180deg,#fff176,#ffc400);box-shadow:0 8px 0 #a36d00,0 0 20px rgba(255,220,40,.35);cursor:pointer}.hide{display:none}.touch{position:fixed;left:0;right:0;bottom:12px;display:flex;justify-content:space-between;padding:0 18px;pointer-events:none}.touch button{pointer-events:auto;width:96px;height:60px;border-radius:18px;border:1px solid rgba(255,255,255,.35);background:rgba(8,22,62,.62);color:white;font-size:15px;font-weight:900;backdrop-filter:blur(6px)}@media (min-width:800px){.touch{display:none}}
 </style>
 </head>
-
 <body>
-<div id="gameWrap">
-  <canvas id="game"></canvas>
-</div>
-
-<div id="hud">
-  <div id="score">SCORE 0</div>
-  <div id="combo">COMBO x1</div>
-</div>
-
-<div id="startScreen">
-  <div class="panel">
-    <h1>MONSTARZ RUN</h1>
-    <p>SPACE / 터치 : 점프</p>
-    <p>↓ / 오른쪽 버튼 : 슬라이드</p>
-    <p>별풍선을 먹고 콤보를 이어가라!</p>
-    <button id="startBtn">게임 시작</button>
-  </div>
-</div>
-
-<div id="gameOverScreen" style="display:none;">
-  <div class="panel">
-    <h1>GAME OVER</h1>
-    <p id="finalScore">SCORE 0</p>
-    <button onclick="location.reload()">다시 시작</button>
-  </div>
-</div>
-
-<div id="mobileControls">
-  <button class="ctrlBtn" id="jumpBtn">JUMP</button>
-  <button class="ctrlBtn" id="slideBtn">SLIDE</button>
-</div>
-
+<div id="wrap"><canvas id="game" width="1280" height="720"></canvas></div>
+<div id="start" class="overlay"><div class="panel"><div class="title">MONSTARZ RUN v5</div><div class="desc">로고형 캐릭터 · 실제 판정선과 일체형 지형 · 낙사 즉사<br>SPACE/↑ 점프 · ↓ 슬라이드 · 코인 콤보 지원<br><b>소리는 시작 버튼을 누르면 재생됨</b></div><button class="btn" id="startBtn">게임 시작</button></div></div>
+<div id="over" class="overlay hide"><div class="panel"><div class="title">GAME OVER</div><div class="desc" id="result">SCORE 0</div><button class="btn" id="retryBtn">다시하기</button></div></div>
+<div class="touch"><button id="slideBtn">SLIDE</button><button id="jumpBtn">JUMP</button></div>
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-const scoreEl = document.getElementById("score");
-const comboEl = document.getElementById("combo");
-const startScreen = document.getElementById("startScreen");
-const gameOverScreen = document.getElementById("gameOverScreen");
-const finalScoreEl = document.getElementById("finalScore");
-
-let W = 0;
-let H = 0;
-let DPR = 1;
-
-function resize() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
-  W = window.innerWidth;
-  H = window.innerHeight;
-  canvas.width = Math.floor(W * DPR);
-  canvas.height = Math.floor(H * DPR);
-  canvas.style.width = W + "px";
-  canvas.style.height = H + "px";
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+const cvs=document.getElementById('game'),ctx=cvs.getContext('2d');
+const W=1280,H=720,baseGround=570;
+const imgNames=['player_monstarz','bg_back','bg_mid','bg_front','coin_blue','coin_orange','coin_purple','coin_yellow','coin_pink','obstacle_spike','obstacle_crystal'];
+const imgs={}; let loaded=0; imgNames.forEach(n=>{imgs[n]=new Image();imgs[n].src='assets/'+n+'.png';imgs[n].onload=()=>loaded++;});
+const audio={bgm:new Audio('audio/bgm_loop.wav'),jump:new Audio('audio/jump.wav'),coin:new Audio('audio/coin.wav'),hit:new Audio('audio/hit.wav'),gameover:new Audio('audio/gameover.wav')};
+audio.bgm.loop=true; audio.bgm.volume=.35; audio.coin.volume=.72; audio.jump.volume=.44; audio.hit.volume=.58;
+let state='ready',last=0,score=0,best=Number(localStorage.monstarzBest||0),speed=6.4,spawnT=0,coinT=0,bg=[0,0,0],shake=0,particles=[],world=0,combo=0,comboT=0,debugHitbox=false,lastObstacleWorld=-9999;
+let obstacles=[],coins=[];
+const player={x:170,y:baseGround-118,w:118,h:118,vy:0,onGround:true,jumps:0,slide:false,slideT:0,angle:0};
+function reset(){score=0;speed=6.4;spawnT=1200;coinT=900;obstacles=[];coins=[];particles=[];shake=0;world=0;combo=0;comboT=0;lastObstacleWorld=-9999;Object.assign(player,{x:170,y:baseGround-118,w:118,h:118,vy:0,onGround:true,jumps:0,slide:false,slideT:0,angle:0});state='play';last=performance.now();document.getElementById('over').classList.add('hide');}
+function start(){document.getElementById('start').classList.add('hide');audio.bgm.currentTime=0;audio.bgm.play().catch(()=>{});reset();requestAnimationFrame(loop)}
+function play(k){try{audio[k].currentTime=0;audio[k].play()}catch(e){}}
+function getGround(wx){
+  const m=((wx%2400)+2400)%2400;
+  if(m>760&&m<940) return null;                // 낙사 구간 1
+  if(m>1710&&m<1840) return null;              // 낙사 구간 2
+  if(m<360) return baseGround;                 // 평지
+  if(m<620) return baseGround-(m-360)*.42;     // 오르막
+  if(m<760) return baseGround-110;             // 높은 평지
+  if(m<1120) return baseGround-80+(m-940)*.22; // 착지 후 내리막
+  if(m<1420) return baseGround+8;              // 낮은 평지
+  if(m<1710) return baseGround-18+Math.sin((m-1420)/290*Math.PI)*64; // 둥근 언덕
+  if(m<2030) return baseGround-55;             // 짧은 고지대
+  return baseGround;
 }
-window.addEventListener("resize", resize);
-resize();
-
-/* =========================
-   ASSETS
-========================= */
-
-const assets = {
-  player: "assets/player_monstarz_clean.png",
-  coin1: "assets/coin_blue.png",
-  coin2: "assets/coin_orange.png",
-  coin3: "assets/coin_pink.png",
-  coin4: "assets/coin_purple.png",
-  coin5: "assets/coin_yellow.png",
-  bgm: "assets/bgm.mp3",
-  jump: "assets/jump.wav",
-  coin: "assets/coin.wav",
-  hit: "assets/hit.wav",
-  gameover: "assets/gameover.wav"
-};
-
-const img = {};
-for (const [key, src] of Object.entries(assets)) {
-  if (src.endsWith(".png")) {
-    img[key] = new Image();
-    img[key].src = src;
+function groundSlope(wx){const g1=getGround(wx-8),g2=getGround(wx+8); if(g1==null||g2==null)return 0; return Math.atan2(g2-g1,16)}
+function jump(){if(state!=='play')return;if(player.jumps<2){player.vy=player.jumps?-15.2:-18.2;player.jumps++;player.onGround=false;player.slide=false;play('jump');jumpDust(player.x+55,player.y+player.h-8);}}
+function slide(on=true){if(state!=='play')return;if(player.onGround){player.slide=on;player.slideT=on?999:0;if(on)slideSpark();}}
+function jumpDust(x,y){for(let i=0;i<16;i++)particles.push({kind:'dust',x,y,vx:-Math.random()*7-1,vy:(Math.random()-.75)*5,life:28,size:4+Math.random()*6,c:'rgba(180,245,255,.75)'})}
+function slideSpark(){for(let i=0;i<18;i++)particles.push({kind:'spark',x:player.x+20+Math.random()*80,y:player.y+player.h-12,vx:-Math.random()*10-3,vy:(Math.random()-.35)*4,life:20,size:3+Math.random()*4,c:'rgba(255,232,80,.9)'})}
+function addPop(x,y){for(let i=0;i<13;i++)particles.push({kind:'coin',x,y,vx:(Math.random()-.5)*9,vy:(Math.random()-.9)*8,life:30,size:3+Math.random()*5,c:['#ffe45c','#9cf5ff','#ff9ee8'][i%3]});}
+function spawnObstacle(){
+  const px=world+W+130;
+  const minGap=520+Math.min(360,speed*34); // 장애물이 너무 연달아 나오지 않게 최소 간격 보장
+  if(px-lastObstacleWorld<minGap){spawnT=360+Math.random()*360;return;}
+  const gy=getGround(px);
+  if(gy==null){spawnT=650;return;}
+  // 절벽 바로 앞/뒤에는 장애물 금지: 낙사 구간과 겹치면 불공정해서 피함
+  const ahead1=getGround(px+140), ahead2=getGround(px-120);
+  if(ahead1==null||ahead2==null){spawnT=520+Math.random()*420;return;}
+  const roll=Math.random();
+  let type=roll<.55?'obstacle_spike':'obstacle_crystal';
+  let h= roll<.48?58: roll<.82?78:104, w=type==='obstacle_spike'?68:76;
+  let y=gy-h;
+  if(roll>.84){ y=gy-h-78; h=58; } // 공중 장애물: 슬라이드로 회피
+  obstacles.push({x:W+130,y,w,h,type,wx:px});
+  lastObstacleWorld=px;
+}
+function spawnCoins(){
+  const start=W+80, wx0=world+start; const pattern=Math.floor(Math.random()*4);
+  for(let i=0;i<8;i++){
+    const wx=wx0+i*58, gy=getGround(wx); if(gy==null) continue;
+    const y=pattern===0?gy-160:pattern===1?gy-220+Math.sin(i*.9)*38:pattern===2?gy-110-(i%2)*60:gy-270+i*12;
+    coins.push({x:start+i*58,y,w:46,h:46,type:['coin_blue','coin_orange','coin_purple','coin_yellow','coin_pink'][Math.floor(Math.random()*5)],got:false,rot:Math.random()*6,wx});
   }
 }
-
-const coinImgs = ["coin1", "coin2", "coin3", "coin4", "coin5"];
-
-let bgm, sfxJump, sfxCoin, sfxHit, sfxGameover;
-
-function initSound() {
-  try {
-    bgm = new Audio(assets.bgm);
-    bgm.loop = true;
-    bgm.volume = 0.35;
-
-    sfxJump = new Audio(assets.jump);
-    sfxCoin = new Audio(assets.coin);
-    sfxHit = new Audio(assets.hit);
-    sfxGameover = new Audio(assets.gameover);
-
-    sfxJump.volume = 0.45;
-    sfxCoin.volume = 0.65;
-    sfxHit.volume = 0.55;
-    sfxGameover.volume = 0.65;
-
-    bgm.play().catch(() => {});
-  } catch (e) {}
+function rectCircle(rect,cx,cy,r){let nx=Math.max(rect.x,Math.min(cx,rect.x+rect.w)),ny=Math.max(rect.y,Math.min(cy,rect.y+rect.h));let dx=cx-nx,dy=cy-ny;return dx*dx+dy*dy<r*r}
+function playerHit(){return player.slide?{cx:player.x+58,cy:player.y+75,r:44}:{cx:player.x+58,cy:player.y+58,r:47}}
+function update(dt){
+  speed+=dt*.00042; world+=speed; score+=dt*.018; bg[0]=(bg[0]-speed*.22)%1600; bg[1]=(bg[1]-speed*.48)%1600; bg[2]=(bg[2]-speed*1.05)%1600;
+  spawnT-=dt; coinT-=dt; if(spawnT<=0){spawnObstacle();spawnT=1250+Math.random()*1050-Math.min(260,speed*18)} if(coinT<=0){spawnCoins();coinT=1350+Math.random()*1000}
+  player.vy+=.82; player.y+=player.vy; const gy=getGround(world+player.x+58);
+  const wasOnGround=player.onGround;
+  if(gy!=null && player.vy>=0 && player.y+player.h>=gy){player.y=gy-player.h;player.vy=0;player.onGround=true;player.jumps=0;player.angle=groundSlope(world+player.x+58)} else {player.onGround=false; player.angle*=.85;}
+  // 낙사 판정: 발밑에 지형이 없는 상태로 일정 깊이 이상 떨어지면 즉시 게임오버
+  if(gy==null && player.y+player.h>baseGround+48){gameOver();return}
+  if(player.y>H+40){gameOver();return}
+  if(player.slide&&player.onGround&&Math.random()<.45)slideSpark(); if(player.slideT>0&&player.slideT<999){player.slideT--;if(player.slideT<=0)player.slide=false}
+  obstacles.forEach(o=>o.x-=speed); coins.forEach(c=>{c.x-=speed;c.rot+=.08}); obstacles=obstacles.filter(o=>o.x>-160); coins=coins.filter(c=>c.x>-90&&!c.got);
+  const hb=playerHit();
+  coins.forEach(c=>{if(!c.got){let cx=c.x+c.w/2,cy=c.y+c.h/2;if((hb.cx-cx)**2+(hb.cy-cy)**2<(hb.r+24)**2){c.got=true;combo++;comboT=1500;let bonus=Math.min(500,combo*25);score+=120+bonus;play('coin');addPop(cx,cy);}}});
+  if(comboT>0){comboT-=dt;if(comboT<=0)combo=0}
+  for(const o of obstacles){const ob={x:o.x+10,y:o.y+8,w:o.w-20,h:o.h-14};if(rectCircle(ob,hb.cx,hb.cy,hb.r)){gameOver();break}}
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.kind==='spark'?.18:.32;p.life--}); particles=particles.filter(p=>p.life>0); if(shake>0)shake--;
 }
-
-function playSfx(sound) {
-  if (!sound) return;
-  try {
-    sound.currentTime = 0;
-    sound.play().catch(() => {});
-  } catch (e) {}
-}
-
-/* =========================
-   GAME STATE
-========================= */
-
-let running = false;
-let gameOvered = false;
-let lastTime = 0;
-
-let worldX = 0;
-let speed = 360;        // px/sec 기준
-let maxSpeed = 620;
-let score = 0;
-let combo = 1;
-let comboTimer = 0;
-
-let debugHitbox = false;
-
-const player = {
-  x: 130,
-  y: 0,
-  r: 33,
-  w: 82,
-  h: 82,
-  vy: 0,
-  grounded: false,
-  sliding: false,
-  slideTimer: 0,
-  jumpCount: 0
-};
-
-const gravity = 1850;
-const jumpPower = -720;
-
-let coins = [];
-let obstacles = [];
-let particles = [];
-
-let nextCoinX = 550;
-let nextObstacleX = 900;
-
-/* =========================
-   TERRAIN
-========================= */
-
-function terrainY(wx) {
-  const cycle = wx % 2600;
-
-  if (cycle > 1180 && cycle < 1460) return null;
-  if (cycle > 2150 && cycle < 2380) return null;
-
-  let base = H * 0.76;
-
-  if (cycle < 500) return base;
-  if (cycle < 850) return base - (cycle - 500) * 0.18;
-  if (cycle < 1180) return base - 63;
-  if (cycle < 1750) return base - 25 + Math.sin(cycle * 0.015) * 18;
-  if (cycle < 2150) return base + (cycle - 1750) * 0.09;
-  return base + 36;
-}
-
-function groundAtScreenX(screenX) {
-  return terrainY(worldX + screenX);
-}
-
-function drawTerrain() {
-  ctx.beginPath();
-
-  const step = 18;
-  let started = false;
-
-  for (let x = -step; x <= W + step; x += step) {
-    const gy = groundAtScreenX(x);
-
-    if (gy === null) {
-      if (started) {
-        ctx.lineTo(x - step, H + 80);
-        ctx.closePath();
-        fillGround();
-        started = false;
-      }
-      continue;
-    }
-
-    if (!started) {
-      ctx.beginPath();
-      ctx.moveTo(x, H + 80);
-      ctx.lineTo(x, gy);
-      started = true;
-    } else {
-      ctx.lineTo(x, gy);
-    }
+function drawBg(img,off){for(let x=off-1600;x<W+1600;x+=1600)ctx.drawImage(img,x,0,1600,H)}
+function drawTerrain(){
+  // 지형은 배경 타일과 분리해서, 실제 판정선과 눈에 보이는 바닥이 1:1로 맞게 그림
+  const step=10;
+  const pts=[];
+  for(let sx=-40;sx<=W+50;sx+=step){
+    const gy=getGround(world+sx);
+    pts.push({x:sx,y:gy});
   }
-
-  if (started) {
-    ctx.lineTo(W + step, H + 80);
+  ctx.save();
+  let seg=[];
+  const flush=()=>{
+    if(seg.length<2){seg=[];return;}
+    const first=seg[0], last=seg[seg.length-1];
+    // 지형 몸통
+    ctx.beginPath();
+    ctx.moveTo(first.x,H+40);
+    ctx.lineTo(first.x,first.y);
+    for(const p of seg) ctx.lineTo(p.x,p.y);
+    ctx.lineTo(last.x,H+40);
     ctx.closePath();
-    fillGround();
-  }
-
-  // 바닥 라인
-  ctx.save();
-  ctx.strokeStyle = "rgba(120,220,255,.8)";
-  ctx.lineWidth = 3;
-  ctx.shadowColor = "rgba(65,210,255,.65)";
-  ctx.shadowBlur = 12;
-
-  let drawing = false;
-  ctx.beginPath();
-
-  for (let x = -step; x <= W + step; x += step) {
-    const gy = groundAtScreenX(x);
-    if (gy === null) {
-      drawing = false;
-      continue;
+    const grad=ctx.createLinearGradient(0,Math.min(...seg.map(p=>p.y)),0,H);
+    grad.addColorStop(0,'rgba(10,54,116,.96)');
+    grad.addColorStop(.45,'rgba(8,32,78,.98)');
+    grad.addColorStop(1,'rgba(4,15,43,1)');
+    ctx.fillStyle=grad; ctx.fill();
+    // 바닥 안쪽 장식: 지형과 같이 붙어 움직이는 다이아몬드 패턴
+    ctx.save(); ctx.clip();
+    for(let x=Math.floor(first.x/96)*96-20;x<last.x+80;x+=96){
+      for(let y=first.y+74;y<H;y+=112){
+        ctx.globalAlpha=.18;
+        ctx.fillStyle='#7befff';
+        ctx.beginPath();ctx.moveTo(x+36,y-28);ctx.lineTo(x+54,y);ctx.lineTo(x+36,y+28);ctx.lineTo(x+18,y);ctx.closePath();ctx.fill();
+      }
     }
-    if (!drawing) {
-      ctx.moveTo(x, gy);
-      drawing = true;
-    } else {
-      ctx.lineTo(x, gy);
+    ctx.restore(); ctx.globalAlpha=1;
+    // 윗면 네온 라인
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.beginPath(); ctx.moveTo(first.x,first.y);
+    for(const p of seg) ctx.lineTo(p.x,p.y);
+    ctx.strokeStyle='rgba(116,239,255,.96)'; ctx.lineWidth=7; ctx.stroke();
+    ctx.strokeStyle='rgba(0,174,255,.72)'; ctx.lineWidth=2; ctx.stroke();
+    // 낙사 구간 절단면도 그려서 어디가 끊기는지 직관적으로 표시
+    for(const edge of [first,last]){
+      ctx.beginPath(); ctx.moveTo(edge.x,edge.y+4); ctx.lineTo(edge.x,H+26);
+      ctx.strokeStyle='rgba(0,190,255,.9)'; ctx.lineWidth=4; ctx.stroke();
+      ctx.strokeStyle='rgba(7,18,52,.9)'; ctx.lineWidth=1; ctx.stroke();
+    }
+    seg=[];
+  };
+  for(const p of pts){
+    if(p.y==null){flush(); continue;}
+    seg.push(p);
+  }
+  flush();
+  // 낙사 구간 아래 어둡게 처리
+  ctx.fillStyle='rgba(0,0,0,.18)';
+  for(let i=1;i<pts.length;i++){
+    if(pts[i].y==null && pts[i-1].y!=null){
+      let sx=pts[i].x, ex=sx;
+      while(i<pts.length && pts[i].y==null){ex=pts[i].x;i++;}
+      ctx.fillRect(sx,baseGround-70,ex-sx,H-baseGround+90);
     }
   }
-  ctx.stroke();
   ctx.restore();
 }
-
-function fillGround() {
-  const g = ctx.createLinearGradient(0, H * .55, 0, H);
-  g.addColorStop(0, "#14375c");
-  g.addColorStop(1, "#07111f");
-  ctx.fillStyle = g;
-  ctx.fill();
-
-  ctx.strokeStyle = "rgba(255,255,255,.07)";
-  ctx.lineWidth = 1;
-  ctx.stroke();
+function draw(){
+  ctx.save(); if(shake)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake); ctx.clearRect(0,0,W,H); drawBg(imgs.bg_back,bg[0]); drawBg(imgs.bg_mid,bg[1]); drawTerrain();
+  coins.forEach(c=>{ctx.save();ctx.translate(c.x+c.w/2,c.y+c.h/2);ctx.rotate(Math.sin(c.rot)*.12);ctx.drawImage(imgs[c.type],-c.w/2,-c.h/2,c.w,c.h);ctx.restore();});
+  obstacles.forEach(o=>ctx.drawImage(imgs[o.type],o.x,o.y,o.w,o.h));
+  ctx.globalAlpha=.34;ctx.beginPath();ctx.ellipse(player.x+player.w/2,player.y+player.h+8,58,12,0,0,Math.PI*2);ctx.fillStyle='#00102d';ctx.fill();ctx.globalAlpha=1;
+  particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/30);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1});
+  ctx.save();ctx.translate(player.x+player.w/2,player.y+player.h/2);ctx.rotate(player.slide?player.angle+.1:player.angle+Math.sin(performance.now()/120)*.025);if(player.slide)ctx.scale(1.16,.72);ctx.drawImage(imgs.player_monstarz,-player.w/2,-player.h/2,player.w,player.h);ctx.restore();
+  if(debugHitbox){const hb=playerHit();ctx.strokeStyle='red';ctx.lineWidth=3;ctx.beginPath();ctx.arc(hb.cx,hb.cy,hb.r,0,Math.PI*2);ctx.stroke();}
+  // UI
+  ctx.fillStyle='rgba(3,10,30,.58)';ctx.roundRect(24,22,376,78,18);ctx.fill();ctx.strokeStyle='rgba(97,224,255,.55)';ctx.stroke();ctx.fillStyle='#fff';ctx.font='900 30px Arial';ctx.fillText('SCORE '+Math.floor(score),48,66);ctx.font='800 18px Arial';ctx.fillStyle='#ffe75d';ctx.fillText('BEST '+Math.floor(best),265,66);
+  if(combo>1){ctx.fillStyle='rgba(255,205,28,.18)';ctx.roundRect(45,108,210,54,18);ctx.fill();ctx.strokeStyle='rgba(255,236,89,.7)';ctx.stroke();ctx.font='900 28px Arial';ctx.fillStyle='#fff176';ctx.fillText('COMBO x'+combo,68,144)}
+  ctx.fillStyle='rgba(3,10,30,.58)';ctx.roundRect(W-230,22,200,54,18);ctx.fill();ctx.fillStyle='#9cecff';ctx.font='900 20px Arial';ctx.fillText('SPEED '+speed.toFixed(1),W-200,57); ctx.restore();
 }
-
-/* =========================
-   SPAWN
-========================= */
-
-function isSafeGround(wx) {
-  return terrainY(wx) !== null &&
-         terrainY(wx + 90) !== null &&
-         terrainY(wx - 90) !== null;
-}
-
-function spawnCoinLine(baseX) {
-  const gy = terrainY(baseX);
-  if (gy === null) return;
-
-  const pattern = Math.random();
-
-  for (let i = 0; i < 5; i++) {
-    coins.push({
-      x: baseX + i * 46,
-      y: gy - 95 - (pattern > .5 ? Math.sin(i * .9) * 28 : 0),
-      r: 17,
-      img: coinImgs[Math.floor(Math.random() * coinImgs.length)],
-      taken: false
-    });
-  }
-}
-
-function spawnObstacle(baseX) {
-  if (!isSafeGround(baseX)) return;
-
-  const gy = terrainY(baseX);
-  const type = Math.random();
-
-  if (type < .55) {
-    obstacles.push({
-      x: baseX,
-      y: gy - 46,
-      w: 42,
-      h: 46,
-      kind: "low"
-    });
-  } else {
-    obstacles.push({
-      x: baseX,
-      y: gy - 92,
-      w: 46,
-      h: 46,
-      kind: "air"
-    });
-  }
-}
-
-/* =========================
-   INPUT
-========================= */
-
-function jump() {
-  if (!running || gameOvered) return;
-
-  if (player.grounded || player.jumpCount < 2) {
-    player.vy = jumpPower;
-    player.grounded = false;
-    player.jumpCount++;
-    player.sliding = false;
-    spawnJumpEffect();
-    playSfx(sfxJump);
-  }
-}
-
-function slide(on) {
-  if (!running || gameOvered) return;
-
-  player.sliding = on && player.grounded;
-  if (player.sliding) {
-    player.slideTimer = 0.18;
-    spawnSlideEffect();
-  }
-}
-
-document.addEventListener("keydown", e => {
-  if (e.code === "Space" || e.code === "ArrowUp") {
-    e.preventDefault();
-    jump();
-  }
-
-  if (e.code === "ArrowDown") {
-    e.preventDefault();
-    slide(true);
-  }
-
-  if (e.code === "KeyH") {
-    debugHitbox = !debugHitbox;
-  }
-});
-
-document.addEventListener("keyup", e => {
-  if (e.code === "ArrowDown") {
-    slide(false);
-  }
-});
-
-const jumpBtn = document.getElementById("jumpBtn");
-const slideBtn = document.getElementById("slideBtn");
-
-jumpBtn.addEventListener("pointerdown", e => {
-  e.preventDefault();
-  jump();
-});
-
-slideBtn.addEventListener("pointerdown", e => {
-  e.preventDefault();
-  slide(true);
-});
-
-slideBtn.addEventListener("pointerup", e => {
-  e.preventDefault();
-  slide(false);
-});
-
-slideBtn.addEventListener("pointercancel", e => {
-  e.preventDefault();
-  slide(false);
-});
-
-canvas.addEventListener("pointerdown", e => {
-  e.preventDefault();
-  if (!running) return;
-  jump();
-});
-
-/* =========================
-   EFFECTS
-========================= */
-
-function spawnJumpEffect() {
-  const gy = groundAtScreenX(player.x);
-  const y = gy || player.y + player.h;
-
-  for (let i = 0; i < 12; i++) {
-    particles.push({
-      x: player.x + 35 + Math.random() * 20,
-      y,
-      vx: -80 - Math.random() * 170,
-      vy: -60 + Math.random() * 90,
-      life: .35,
-      max: .35,
-      size: 4 + Math.random() * 6,
-      type: "dust"
-    });
-  }
-}
-
-function spawnSlideEffect() {
-  const gy = groundAtScreenX(player.x);
-  const y = gy || player.y + player.h;
-
-  for (let i = 0; i < 10; i++) {
-    particles.push({
-      x: player.x + 15 + Math.random() * 40,
-      y: y - 6,
-      vx: -120 - Math.random() * 220,
-      vy: -40 + Math.random() * 70,
-      life: .22,
-      max: .22,
-      size: 3 + Math.random() * 4,
-      type: "spark"
-    });
-  }
-}
-
-function spawnCoinEffect(x, y) {
-  for (let i = 0; i < 10; i++) {
-    particles.push({
-      x,
-      y,
-      vx: -80 + Math.random() * 160,
-      vy: -160 + Math.random() * 120,
-      life: .38,
-      max: .38,
-      size: 3 + Math.random() * 5,
-      type: "coin"
-    });
-  }
-}
-
-/* =========================
-   COLLISION
-========================= */
-
-function circleRectCollision(cx, cy, cr, rx, ry, rw, rh) {
-  const nearestX = Math.max(rx, Math.min(cx, rx + rw));
-  const nearestY = Math.max(ry, Math.min(cy, ry + rh));
-  const dx = cx - nearestX;
-  const dy = cy - nearestY;
-  return dx * dx + dy * dy < cr * cr;
-}
-
-function playerHitCircle() {
-  const cx = player.x + player.w * .5;
-  const cy = player.y + player.h * (player.sliding ? .64 : .5);
-  const r = player.sliding ? 24 : 31;
-  return { cx, cy, r };
-}
-
-/* =========================
-   UPDATE
-========================= */
-
-function update(dt) {
-  if (!running || gameOvered) return;
-
-  // 모바일 프레임 튐 방지
-  dt = Math.min(dt, 1 / 30);
-
-  speed = Math.min(maxSpeed, speed + 3.5 * dt);
-  worldX += speed * dt;
-
-  score += dt * 18 * combo;
-  scoreEl.textContent = "SCORE " + Math.floor(score);
-
-  comboTimer -= dt;
-  if (comboTimer <= 0) {
-    combo = 1;
-    comboEl.classList.remove("on");
-  }
-
-  // 지형 기준 플레이어 물리
-  player.vy += gravity * dt;
-  player.y += player.vy * dt;
-
-  const gy = groundAtScreenX(player.x + player.w * .5);
-
-  if (gy !== null && player.y + player.h >= gy) {
-    player.y = gy - player.h;
-    player.vy = 0;
-    player.grounded = true;
-    player.jumpCount = 0;
-  } else {
-    player.grounded = false;
-  }
-
-  if (player.y > H + 160) {
-    endGame();
-    return;
-  }
-
-  if (player.slideTimer > 0) {
-    player.slideTimer -= dt;
-    if (player.slideTimer <= 0 && player.sliding) {
-      spawnSlideEffect();
-      player.slideTimer = 0.18;
-    }
-  }
-
-  // 스폰
-  if (worldX + W + 250 > nextCoinX) {
-    spawnCoinLine(nextCoinX);
-    nextCoinX += 420 + Math.random() * 360;
-  }
-
-  if (worldX + W + 350 > nextObstacleX) {
-    spawnObstacle(nextObstacleX);
-    nextObstacleX += 680 + Math.random() * 520;
-  }
-
-  // 코인 충돌
-  const hit = playerHitCircle();
-
-  for (const c of coins) {
-    if (c.taken) continue;
-
-    const sx = c.x - worldX;
-    const sy = c.y;
-
-    const dx = hit.cx - sx;
-    const dy = hit.cy - sy;
-    if (dx * dx + dy * dy < (hit.r + c.r) * (hit.r + c.r)) {
-      c.taken = true;
-      combo++;
-      comboTimer = 2.3;
-      score += 80 * combo;
-      comboEl.textContent = "COMBO x" + combo;
-      comboEl.classList.add("on");
-      spawnCoinEffect(sx, sy);
-      playSfx(sfxCoin);
-    }
-  }
-
-  // 장애물 충돌
-  for (const o of obstacles) {
-    const sx = o.x - worldX;
-    if (sx < -120) continue;
-
-    if (circleRectCollision(hit.cx, hit.cy, hit.r, sx, o.y, o.w, o.h)) {
-      playSfx(sfxHit);
-      endGame();
-      return;
-    }
-  }
-
-  // 오래된 오브젝트 제거
-  coins = coins.filter(c => c.x - worldX > -160 && !c.taken);
-  obstacles = obstacles.filter(o => o.x - worldX > -180);
-
-  // 파티클
-  for (const p of particles) {
-    p.life -= dt;
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    p.vy += 320 * dt;
-  }
-  particles = particles.filter(p => p.life > 0);
-}
-
-/* =========================
-   DRAW
-========================= */
-
-function drawBackground() {
-  ctx.clearRect(0, 0, W, H);
-
-  const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, "#071630");
-  sky.addColorStop(.58, "#0b2445");
-  sky.addColorStop(1, "#07111f");
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, W, H);
-
-  // 별
-  ctx.save();
-  ctx.fillStyle = "rgba(255,255,255,.7)";
-  for (let i = 0; i < 80; i++) {
-    const x = (i * 97 - worldX * 0.08) % (W + 120);
-    const y = 30 + (i * 53) % Math.floor(H * .45);
-    const r = (i % 3) + .8;
-    ctx.globalAlpha = .35 + (i % 5) * .1;
-    ctx.beginPath();
-    ctx.arc(x < -20 ? x + W + 120 : x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
-
-  // 먼 배경 산
-  ctx.save();
-  ctx.fillStyle = "rgba(35, 94, 140, .22)";
-  ctx.beginPath();
-  ctx.moveTo(0, H * .62);
-  for (let x = 0; x <= W + 80; x += 80) {
-    const y = H * .58 + Math.sin((x + worldX * .08) * .01) * 25;
-    ctx.lineTo(x, y);
-  }
-  ctx.lineTo(W, H);
-  ctx.lineTo(0, H);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawPlayer() {
-  ctx.save();
-
-  const bob = player.grounded ? Math.sin(worldX * .045) * 2 : 0;
-  const px = player.x;
-  const py = player.y + bob;
-  const scaleY = player.sliding ? .68 : 1;
-
-  // 그림자
-  const gy = groundAtScreenX(player.x + player.w * .5);
-  if (gy !== null) {
-    ctx.fillStyle = "rgba(0,0,0,.28)";
-    ctx.beginPath();
-    ctx.ellipse(player.x + 42, gy + 6, 34, 8, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  ctx.translate(px + player.w / 2, py + player.h / 2);
-  ctx.scale(1, scaleY);
-  ctx.rotate(player.grounded ? Math.sin(worldX * .03) * .035 : player.vy * .00018);
-
-  if (img.player && img.player.complete) {
-    ctx.drawImage(img.player, -player.w / 2, -player.h / 2, player.w, player.h);
-  } else {
-    ctx.fillStyle = "#40d7ff";
-    ctx.beginPath();
-    ctx.arc(0, 0, 34, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  ctx.restore();
-
-  if (debugHitbox) {
-    const h = playerHitCircle();
-    ctx.save();
-    ctx.strokeStyle = "red";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(h.cx, h.cy, h.r, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
-function drawCoins() {
-  for (const c of coins) {
-    const sx = c.x - worldX;
-    if (sx < -80 || sx > W + 80) continue;
-
-    const pulse = 1 + Math.sin((worldX + c.x) * .025) * .08;
-    const size = c.r * 2 * pulse;
-
-    ctx.save();
-    ctx.translate(sx, c.y);
-    ctx.rotate(Math.sin((worldX + c.x) * .02) * .15);
-
-    const im = img[c.img];
-    if (im && im.complete) {
-      ctx.drawImage(im, -size / 2, -size / 2, size, size);
-    } else {
-      ctx.fillStyle = "#ffd95c";
-      ctx.beginPath();
-      ctx.arc(0, 0, c.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    ctx.restore();
-  }
-}
-
-function drawObstacles() {
-  for (const o of obstacles) {
-    const sx = o.x - worldX;
-    if (sx < -100 || sx > W + 100) continue;
-
-    ctx.save();
-
-    const grad = ctx.createLinearGradient(sx, o.y, sx, o.y + o.h);
-    grad.addColorStop(0, "#ff5f7d");
-    grad.addColorStop(1, "#8e1b42");
-
-    ctx.fillStyle = grad;
-    ctx.shadowColor = "rgba(255,80,120,.55)";
-    ctx.shadowBlur = 12;
-
-    roundRect(ctx, sx, o.y, o.w, o.h, 10);
-    ctx.fill();
-
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = "rgba(255,255,255,.25)";
-    roundRect(ctx, sx + 8, o.y + 8, o.w - 16, 8, 4);
-    ctx.fill();
-
-    ctx.restore();
-  }
-}
-
-function drawParticles(dt) {
-  for (const p of particles) {
-    const alpha = Math.max(0, p.life / p.max);
-    ctx.save();
-    ctx.globalAlpha = alpha;
-
-    if (p.type === "dust") ctx.fillStyle = "#b9e8ff";
-    else if (p.type === "spark") ctx.fillStyle = "#ffd95c";
-    else ctx.fillStyle = "#fff1a8";
-
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-}
-
-function draw() {
-  drawBackground();
-  drawTerrain();
-  drawCoins();
-  drawObstacles();
-  drawPlayer();
-  drawParticles();
-}
-
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-
-/* =========================
-   LOOP
-========================= */
-
-function loop(time) {
-  if (!lastTime) lastTime = time;
-
-  let dt = (time - lastTime) / 1000;
-  lastTime = time;
-
-  update(dt);
-  draw();
-
-  requestAnimationFrame(loop);
-}
-
-requestAnimationFrame(loop);
-
-/* =========================
-   START / END
-========================= */
-
-function startGame() {
-  initSound();
-
-  running = true;
-  gameOvered = false;
-  startScreen.style.display = "none";
-
-  const firstGround = groundAtScreenX(player.x + player.w * .5) || H * .76;
-  player.y = firstGround - player.h;
-  player.vy = 0;
-  player.grounded = true;
-
-  lastTime = performance.now();
-}
-
-function endGame() {
-  if (gameOvered) return;
-
-  gameOvered = true;
-  running = false;
-
-  try {
-    if (bgm) bgm.pause();
-    playSfx(sfxGameover);
-  } catch (e) {}
-
-  finalScoreEl.textContent = "SCORE " + Math.floor(score);
-  gameOverScreen.style.display = "flex";
-}
-
-document.getElementById("startBtn").addEventListener("click", startGame);
+function gameOver(){if(state!=='play')return;state='over';shake=18;play('hit');setTimeout(()=>play('gameover'),160);audio.bgm.pause();best=Math.max(best,Math.floor(score));localStorage.monstarzBest=best;document.getElementById('result').innerHTML='SCORE <b>'+Math.floor(score)+'</b><br>BEST <b>'+Math.floor(best)+'</b><br>MAX COMBO <b>x'+combo+'</b>';document.getElementById('over').classList.remove('hide');}
+function loop(t){if(state!=='play')return;const dt=Math.min(34,t-last);last=t;update(dt);draw();requestAnimationFrame(loop)}
+CanvasRenderingContext2D.prototype.roundRect=CanvasRenderingContext2D.prototype.roundRect||function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();return this};
+document.getElementById('startBtn').onclick=start;document.getElementById('retryBtn').onclick=()=>{audio.bgm.currentTime=0;audio.bgm.play().catch(()=>{});reset();requestAnimationFrame(loop)};
+document.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()} if(e.code==='ArrowDown'){e.preventDefault();slide(true)} if(e.code==='KeyH')debugHitbox=!debugHitbox});
+document.addEventListener('keyup',e=>{if(e.code==='ArrowDown')slide(false)});
+document.getElementById('jumpBtn').addEventListener('pointerdown',jump);document.getElementById('slideBtn').addEventListener('pointerdown',()=>slide(true));document.getElementById('slideBtn').addEventListener('pointerup',()=>slide(false));document.getElementById('slideBtn').addEventListener('pointercancel',()=>slide(false));
+function preloadDraw(){if(loaded<imgNames.length){ctx.fillStyle='#06112c';ctx.fillRect(0,0,W,H);ctx.fillStyle='white';ctx.font='900 28px Arial';ctx.fillText('LOADING '+loaded+'/'+imgNames.length,520,360);requestAnimationFrame(preloadDraw)}else{draw()}}preloadDraw();
 </script>
 </body>
 </html>
